@@ -3,4 +3,14 @@
     <string name="fab_add_post_title">Add Post</string>
     <string name="fab_post_title">Post</string>
     <string name="feed_empty_state_title">Nothing to show</string>
+    <string name="feed_insert_url_dialog_title">Insert URL</string>
+    <string name="feed_post_all_url_btn_title">Post all URL</string>
+    <string name="feed_add_more_url_btn_title">Add more URL</string>
+    <string name="paste_from_clipboard_text">Paste from clipboard</string>
+    <string name="feed_insert_url_here_or_hint">Insert url here or</string>
+    <string name="feed_add_more_url_button">Add more URL</string>
+    <string name="feed_downloading_image_text">Downloading Image…</string>
+    <string name="feed_downloading_video_text">Downloading Video…</string>
+    <string name="feed_loading_video_text">Loading Video…</string>
+    <string name="feed_loading_image_text">loading Image…</string>
 </resources>
