@@ -16,6 +16,7 @@
         app:layout_constraintStart_toEndOf="parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
+        android:paddingBottom="250dp"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
