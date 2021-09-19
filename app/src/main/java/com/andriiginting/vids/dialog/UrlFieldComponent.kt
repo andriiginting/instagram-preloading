@@ -4,13 +4,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.andriiginting.vids.databinding.ItemAddUrlBinding
-import com.andriiginting.vids.feeds.FeedVideo
 import com.andriiginting.vids.gone
-import com.andriiginting.vids.onTextChanged
 import com.andriiginting.vids.visible
-import java.util.*
 
 class UrlFieldComponent @JvmOverloads constructor(
     context: Context,
@@ -19,14 +17,14 @@ class UrlFieldComponent @JvmOverloads constructor(
 ) : ConstraintLayout(context, attributeSet, defStyle), UrlFieldViewComponent {
 
     private val binding = ItemAddUrlBinding.inflate(LayoutInflater.from(context), this, true)
-    private lateinit var textChangeListener: (FeedVideo) -> Unit
+    private lateinit var textChangeListener: TextChangeListener
 
     private val presenter by lazy { UrlFieldPresenter(this) }
 
-    fun bind(listener: (FeedVideo) -> Unit) {
-        textChangeListener = listener
+    fun bind() {
         binding.urlLayout.tvCopyClipboard.setOnClickListener {
-            val clipboard = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipboard =
+                it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             presenter.onPasteFromClipboard("${clipboard.primaryClip?.getItemAt(0)?.text}")
         }
 
@@ -34,10 +32,21 @@ class UrlFieldComponent @JvmOverloads constructor(
             presenter.validateUrl(s.toString())
         }
 
-        binding.urlLayout.etAddUrl.requestFocus()
+        binding.urlLayout.etAddUrl.apply {
+            requestFocus()
+            setOnEditorActionListener { view, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    view.hideKeyboard()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
+        }
     }
 
-    fun getUrlValue() = binding.urlLayout.etAddUrl.text.toString()
+    fun setTextChangeListener(listener: TextChangeListener) {
+        textChangeListener = listener
+    }
 
     fun showDismissIcon() {
         binding.ivClearUrl.visible()
@@ -54,15 +63,11 @@ class UrlFieldComponent @JvmOverloads constructor(
     }
 
     override fun notifyValidUrl(url: String) {
-        textChangeListener(
-            FeedVideo(url, "")
-        )
+        textChangeListener.invokeText(url)
     }
 
     override fun notifyInvalidUrl() {
-        textChangeListener(
-            FeedVideo("", "")
-        )
+        textChangeListener.invalidText()
     }
 
     override fun pasteFromClipboard(url: String) {
@@ -84,4 +89,9 @@ interface UrlFieldViewComponent {
     fun pasteFromClipboard(url: String)
     fun hideClipboardButton()
     fun showClipboardButton()
+}
+
+interface TextChangeListener {
+    fun invokeText(url: String)
+    fun invalidText()
 }

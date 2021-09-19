@@ -1,9 +1,11 @@
 package com.andriiginting.vids.dialog.fields
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.andriiginting.vids.databinding.DialogAddPostItemLayoutBinding
+import com.andriiginting.vids.dialog.TextChangeListener
 import com.andriiginting.vids.dialog.UrlFieldListener
 import com.andriiginting.vids.feeds.FeedVideo
 
@@ -24,19 +26,28 @@ class UrlFieldViewHolder(
     }
 
     fun bind(listener: UrlFieldListener) {
-        binding.fieldComponent.bind {
-            listener.observeField(it)
+        val textListener = object : TextChangeListener {
+            override fun invokeText(url: String) {
+                Log.d("feeds-data", "valid text")
+                listener.observeField(
+                    FeedVideo(
+                        url,
+                        "https://source.unsplash.com/random/landscape"
+                    )
+                )
+            }
+
+            override fun invalidText() {
+                Log.d("feeds-data", "invalid text")
+            }
+        }
+        binding.fieldComponent.apply {
+            bind()
+            setTextChangeListener(textListener)
         }
 
         removeField(listener::removeField)
         showDismissIconIfEnabled()
-    }
-
-    fun getUrlValue(): FeedVideo {
-        return FeedVideo(
-            binding.fieldComponent.getUrlValue(),
-            "https://source.unsplash.com/random/landscape"
-        )
     }
 
     private fun showDismissIconIfEnabled() {

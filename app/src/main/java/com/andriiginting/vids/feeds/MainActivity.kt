@@ -12,6 +12,7 @@ import com.andriiginting.vids.dialog.AddPostDialog
 import com.andriiginting.vids.dialog.MainFeedState
 import com.andriiginting.vids.dialog.UrlCollectionViewModel
 import com.andriiginting.vids.gone
+import com.andriiginting.vids.hideKeyboard
 import com.andriiginting.vids.visible
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                     binding.rvFeedVideo.visible()
                     feedsAdapter.setData(state.data)
                     onPreloadingStarted(state.data)
+                    binding.root.hideKeyboard()
                 }
                 MainFeedState.ShowDefault -> binding.emptyLayout.root.visible()
             }

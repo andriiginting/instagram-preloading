@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:auto_show="true"
+        app:show_timeout="3000"
         app:repeat_toggle_modes="all"
         app:resize_mode="fit"
         app:surface_type="texture_view"

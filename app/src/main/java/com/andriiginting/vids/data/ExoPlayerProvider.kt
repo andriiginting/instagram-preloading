@@ -10,6 +10,6 @@ object ExoPlayerProvider {
         .setUpstreamDataSourceFactory(provideHttpDataSource())
         .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
 
-    fun provideHttpDataSource() = DefaultHttpDataSource.Factory()
+    private fun provideHttpDataSource() = DefaultHttpDataSource.Factory()
         .setAllowCrossProtocolRedirects(true)
 }

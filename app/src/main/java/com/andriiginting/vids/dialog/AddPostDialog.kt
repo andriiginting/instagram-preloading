@@ -1,6 +1,5 @@
 package com.andriiginting.vids.dialog
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -9,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isInvisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +18,7 @@ import com.andriiginting.vids.databinding.DialogAddPostUrlBinding
 import com.andriiginting.vids.dialog.fields.DialogListener
 import com.andriiginting.vids.dialog.fields.UrlFieldAdapter
 import com.andriiginting.vids.feeds.FeedVideo
+import com.andriiginting.vids.hideKeyboard
 import com.andriiginting.vids.visible
 
 class AddPostDialog : DialogListener, DialogFragment() {
@@ -62,6 +63,11 @@ class AddPostDialog : DialogListener, DialogFragment() {
         setupFieldRecyclerview()
     }
 
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+    }
+
     override fun onStart() {
         super.onStart()
         if (dialog != null && dialog?.window != null) {
@@ -81,6 +87,7 @@ class AddPostDialog : DialogListener, DialogFragment() {
             viewModel.postVideos(fieldAdapter.getAllUrl())
             fieldAdapter.clear()
             dismissAllowingStateLoss()
+            it.hideKeyboard()
         }
 
         binding.btnAddMore.setOnClickListener {

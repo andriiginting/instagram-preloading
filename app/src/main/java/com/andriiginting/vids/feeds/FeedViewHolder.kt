@@ -1,13 +1,11 @@
 package com.andriiginting.vids.feeds
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.andriiginting.vids.R
 import com.andriiginting.vids.data.ExoPlayerProvider
-import com.andriiginting.vids.data.FeedsVideoCache
 import com.andriiginting.vids.databinding.VideoFeedsItemLayoutBinding
 import com.andriiginting.vids.gone
 import com.andriiginting.vids.visible
@@ -39,8 +37,6 @@ class FeedViewHolder(
     }
 
     private lateinit var videos: VideoType.VideoItem
-
-    private val cache by lazy { FeedsVideoCache.getInstance(binding.root.context) }
 
     fun bind(video: VideoType.VideoItem) {
         videos = video
@@ -84,7 +80,6 @@ class FeedViewHolder(
     }
 
     override fun onPreparedVideo(player: SimpleExoPlayer) {
-        Log.d("feeds-video", "onPrepared video $player")
         onVideoPlayed(player)
         binding.ivThumbnail.gone()
         binding.videoExoplayer.apply {
@@ -94,7 +89,6 @@ class FeedViewHolder(
     }
 
     override fun onPlayed() {
-        Log.d("feeds-video", "onPlayed")
         binding.loadingLayout.root.gone()
         binding.root.postDelayed({
             if (binding.videoExoplayer.player != null) {
@@ -105,7 +99,6 @@ class FeedViewHolder(
     }
 
     override fun onCancelled() {
-        Log.d("feeds-video", "onCancelled")
         binding.videoExoplayer.player = null
         binding.videoExoplayer.gone()
         binding.ivThumbnail.visible()
@@ -113,7 +106,6 @@ class FeedViewHolder(
     }
 
     override fun onBuffered(isBuffer: Boolean) {
-        Log.d("feeds-video", "onBuffered")
         binding.ivThumbnail.gone()
         binding.videoExoplayer.gone()
         binding.loadingLayout.apply {

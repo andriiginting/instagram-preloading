@@ -1,12 +1,15 @@
 package com.andriiginting.vids
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Point
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 
 fun TextView.onTextChanged(
@@ -49,3 +52,12 @@ fun View.screenSize(): Point {
     return point
 }
 
+fun View.showKeyboard(){
+    val imm = this.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, 0)
+}
+
+fun View.hideKeyboard() {
+    val inputManagerMethod = this.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManagerMethod.hideSoftInputFromWindow(windowToken, 0)
+}
