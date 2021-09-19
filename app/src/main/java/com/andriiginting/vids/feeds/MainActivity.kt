@@ -1,13 +1,12 @@
 package com.andriiginting.vids.feeds
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.andriiginting.vids.data.FeedsPreloadingCache
 import com.andriiginting.vids.databinding.ActivityMainBinding
 import com.andriiginting.vids.dialog.AddPostDialog
 import com.andriiginting.vids.dialog.MainFeedState
@@ -59,22 +58,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFeedsVideo() {
         binding.rvFeedVideo.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             adapter = feedsAdapter
         }
-        viewModel.setVideos()
     }
 
     private fun observeFeed() {
         viewModel.videoState.observe(this, { state ->
-            when(state) {
-               is MainFeedState.HideEmptyScreen -> {
-                   binding.emptyLayout.root.gone()
-               }
+            when (state) {
+                is MainFeedState.HideEmptyScreen -> {
+                    binding.emptyLayout.root.gone()
+                }
                 is MainFeedState.AddVideos -> {
                     binding.rvFeedVideo.visible()
                     feedsAdapter.setData(state.data)
+                    onPreloadingStarted(state.data)
                 }
+                MainFeedState.ShowDefault -> binding.emptyLayout.root.visible()
             }
         })
     }
@@ -83,5 +84,11 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setBackgroundDrawable(
             ContextCompat.getDrawable(this, android.R.color.white)
         )
+    }
+
+    private fun onPreloadingStarted(list: List<FeedVideo>) {
+        Intent(this, FeedsPreloadingCache::class.java).apply {
+            putStringArrayListExtra(FeedsPreloadingCache.KEY_LIST, ArrayList(list.map { it.url }))
+        }.also(::startService)
     }
 }

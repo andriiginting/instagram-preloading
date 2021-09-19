@@ -5,8 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.airbnb.lottie.LottieDrawable
 import com.andriiginting.vids.R
+import com.andriiginting.vids.data.ExoPlayerProvider
 import com.andriiginting.vids.data.FeedsVideoCache
 import com.andriiginting.vids.databinding.VideoFeedsItemLayoutBinding
 import com.andriiginting.vids.gone
@@ -20,12 +20,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.offline.DownloadHelper
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
-import com.google.android.exoplayer2.upstream.cache.CacheWriter
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 
 class FeedViewHolder(
     private val binding: VideoFeedsItemLayoutBinding
@@ -67,7 +62,8 @@ class FeedViewHolder(
                 ): Boolean {
                     binding.loadingLayout.apply {
                         root.visible()
-                        tvDescription.text = root.context.getString(R.string.feed_downloading_image_text)
+                        tvDescription.text =
+                            root.context.getString(R.string.feed_downloading_image_text)
                     }
                     return false
                 }
@@ -88,7 +84,7 @@ class FeedViewHolder(
     }
 
     override fun onPreparedVideo(player: SimpleExoPlayer) {
-        Log.d("feeds-video","onPrepared video $player")
+        Log.d("feeds-video", "onPrepared video $player")
         onVideoPlayed(player)
         binding.ivThumbnail.gone()
         binding.videoExoplayer.apply {
@@ -98,10 +94,10 @@ class FeedViewHolder(
     }
 
     override fun onPlayed() {
-        Log.d("feeds-video","onPlayed")
+        Log.d("feeds-video", "onPlayed")
         binding.loadingLayout.root.gone()
         binding.root.postDelayed({
-            if (binding.videoExoplayer.player != null){
+            if (binding.videoExoplayer.player != null) {
                 binding.videoExoplayer.visible()
                 binding.ivThumbnail.gone()
             }
@@ -109,7 +105,7 @@ class FeedViewHolder(
     }
 
     override fun onCancelled() {
-        Log.d("feeds-video","onCancelled")
+        Log.d("feeds-video", "onCancelled")
         binding.videoExoplayer.player = null
         binding.videoExoplayer.gone()
         binding.ivThumbnail.visible()
@@ -117,7 +113,7 @@ class FeedViewHolder(
     }
 
     override fun onBuffered(isBuffer: Boolean) {
-        Log.d("feeds-video","onBuffered")
+        Log.d("feeds-video", "onBuffered")
         binding.ivThumbnail.gone()
         binding.videoExoplayer.gone()
         binding.loadingLayout.apply {
@@ -129,13 +125,16 @@ class FeedViewHolder(
     }
 
     private fun onVideoPlayed(player: SimpleExoPlayer) {
+        val mediaItem = MediaItem.fromUri(videos.video.url)
         with(player) {
             stop(true)
             clearMediaItems()
-            setMediaItem(
-                MediaItem.fromUri(videos.video.url)
-            )
+            setMediaSource(getMediaSource(mediaItem), true)
             prepare()
         }
     }
+
+    private fun getMediaSource(mediaItem: MediaItem) = ProgressiveMediaSource.Factory(
+        ExoPlayerProvider.provideCacheFactory(binding.root.context)
+    ).createMediaSource(mediaItem)
 }

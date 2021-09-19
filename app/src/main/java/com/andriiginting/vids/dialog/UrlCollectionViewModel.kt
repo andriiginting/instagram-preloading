@@ -3,50 +3,37 @@ package com.andriiginting.vids.dialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.andriiginting.vids.data.UrlFieldResponse
 import com.andriiginting.vids.feeds.FeedVideo
 
 class UrlCollectionViewModel : ViewModel() {
-    private val _state = MutableLiveData<UrlDialogState>()
-    val state: LiveData<UrlDialogState>
-        get() = _state
 
     private val _submitButtonState = MutableLiveData<SubmitButtonState>(SubmitButtonState.Disabled)
     val submitButtonState: LiveData<SubmitButtonState> get() = _submitButtonState
 
-    private val _videoState = MutableLiveData<MainFeedState>()
+    private val _videoState = MutableLiveData<MainFeedState>(MainFeedState.ShowDefault)
     val videoState: LiveData<MainFeedState> get() = _videoState
 
-    private val list = mutableListOf<UrlFieldResponse>()
+    private val list = mutableSetOf<FeedVideo>()
 
-    fun populateUrlCollection(data: UrlFieldResponse) {
-        list.add(data)
-        if (list.size > 1) {
-            _state.value = UrlDialogState.EnableDismissIcon
+    fun populateUrlCollection(data: FeedVideo) {
+        if (data.url.isNotEmpty()) {
+            list.add(data)
+            onObserveUrlField(list)
         }
     }
 
-    fun removeField(id: String) {
-        val response = list.find { it.id == id }
-        val index = list.indexOf(response)
-
-        list.removeAt(index)
-        _state.value = UrlDialogState.RemoveUrlField(position = index)
-    }
-
-    fun onObserveUrlField(url: String) {
-        if (url.isNotEmpty() || list.size > 1) {
+    private fun onObserveUrlField(list: MutableSet<FeedVideo>) {
+        if (list.size > 1) {
             _submitButtonState.value = SubmitButtonState.Enabled
         } else {
             _submitButtonState.value = SubmitButtonState.Disabled
         }
     }
 
-    fun setVideos() {
+    fun postVideos(data: List<FeedVideo>) {
         _videoState.value = MainFeedState.HideEmptyScreen
         _videoState.value = MainFeedState.AddVideos(dummyData())
     }
-
 
     private fun dummyData(): List<FeedVideo> {
         return listOf(
@@ -78,13 +65,9 @@ class UrlCollectionViewModel : ViewModel() {
     }
 }
 
-sealed class UrlDialogState {
-    object EnableDismissIcon : UrlDialogState()
-    data class RemoveUrlField(val position: Int) : UrlDialogState()
-}
-
 sealed class MainFeedState {
     object HideEmptyScreen: MainFeedState()
+    object ShowDefault: MainFeedState()
     data class AddVideos(val data: List<FeedVideo>): MainFeedState()
 }
 

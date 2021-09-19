@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/urlLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp"
+    android:background="@drawable/rounded_white_grey_background"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/etAddUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="16dp"
+        android:background="@null"
+        android:hint="@string/feed_insert_url_here_or_hint"
+        android:maxLines="1"
+        android:minHeight="48dp"
+        android:ellipsize="end"
+        android:textSize="14sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvCopyClipboard"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_grey_background"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:foreground="?attr/selectableItemBackground"
+        android:maxLines="1"
+        android:paddingHorizontal="16dp"
+        android:text="@string/paste_from_clipboard_text"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        tools:targetApi="m" />
+</LinearLayout>

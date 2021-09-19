@@ -2,11 +2,12 @@ package com.andriiginting.vids.feeds
 
 import android.view.ViewGroup
 import android.widget.Space
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class FeedsAdapter : ListAdapter<VideoType.VideoItem, RecyclerView.ViewHolder>(FeedDiffUtilCallback()) {
 
-    private var list = mutableListOf<VideoType>()
+    private var list = mutableListOf<VideoType.VideoItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -18,7 +19,7 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val data = list[position]
         when (holder) {
-            is FeedViewHolder -> holder.bind(data as VideoType.VideoItem)
+            is FeedViewHolder -> holder.bind(data)
         }
     }
 
@@ -29,7 +30,8 @@ class FeedsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int = list.size
 
     fun setData(data: List<FeedVideo>) {
-        list.addAll(VideoType.buildItems(data))
+        list.clear()
+        list = VideoType.buildItems(data)
         notifyDataSetChanged()
     }
 }

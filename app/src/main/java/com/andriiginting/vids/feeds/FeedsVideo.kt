@@ -8,13 +8,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.andriiginting.vids.data.ExoPlayerProvider
 import com.andriiginting.vids.dp
 import com.andriiginting.vids.feeds.VideoType.Companion.VIDEO_FEED
 import com.andriiginting.vids.screenSize
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.REPEAT_MODE_ALL
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -34,7 +35,12 @@ class FeedsVideoRecyclerview @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : RecyclerView(context, attrs, defStyleAttr) {
 
-    private val feedsPlayer = SimpleExoPlayer.Builder(context.applicationContext).build()
+    private val feedsPlayer = SimpleExoPlayer
+        .Builder(context.applicationContext)
+        .setMediaSourceFactory(
+            DefaultMediaSourceFactory(ExoPlayerProvider.provideCacheFactory(context.applicationContext))
+        )
+        .build()
     private var videosListener: VideosListener? = null
 
     private var videoItemHeight = 233.dp

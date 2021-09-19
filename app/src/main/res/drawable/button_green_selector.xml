@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:color="@color/design_default_color_secondary"
+        android:state_enabled="true"
+        android:textColor="@color/black"/>
+    <item
+        android:color="@color/design_default_color_secondary"
+        android:textColor="@color/black_300"
+        android:alpha="0.2"
+        />
+</selector>
