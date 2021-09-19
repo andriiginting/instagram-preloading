@@ -21,11 +21,8 @@ class UrlFieldPresenter(private val view: UrlFieldViewComponent) {
     }
 
     fun onPasteFromClipboard(url: String) {
-        if (isUrlValid(url)) {
+        if (url.isNotEmpty()) {
             view.pasteFromClipboard(url)
-            view.notifyValidUrl(url)
-        } else {
-            view.notifyInvalidUrl()
         }
     }
 

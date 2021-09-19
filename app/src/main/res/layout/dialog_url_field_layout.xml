@@ -18,9 +18,13 @@
         android:background="@null"
         android:hint="@string/feed_insert_url_here_or_hint"
         android:maxLines="1"
+        android:inputType="textWebEditText|text"
+        android:imeOptions="actionDone"
         android:minHeight="48dp"
         android:ellipsize="end"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:focusableInTouchMode="true"
+        android:focusable="true"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvCopyClipboard"

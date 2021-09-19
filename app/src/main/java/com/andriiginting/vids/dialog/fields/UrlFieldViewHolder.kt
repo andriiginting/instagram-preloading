@@ -34,7 +34,8 @@ class UrlFieldViewHolder(
 
     fun getUrlValue(): FeedVideo {
         return FeedVideo(
-            binding.fieldComponent.getUrlValue()
+            binding.fieldComponent.getUrlValue(),
+            "https://source.unsplash.com/random/landscape"
         )
     }
 

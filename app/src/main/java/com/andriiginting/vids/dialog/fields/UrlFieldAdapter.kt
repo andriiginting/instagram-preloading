@@ -1,5 +1,6 @@
 package com.andriiginting.vids.dialog.fields
 
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.andriiginting.vids.dialog.UrlFieldListener
@@ -14,6 +15,7 @@ class UrlFieldAdapter(private val listener: DialogListener) : RecyclerView.Adapt
 
     private val list = mutableListOf<Unit>()
     private val urlData = mutableListOf<FeedVideo>()
+    private val urlCollection = mutableListOf<FeedVideo>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UrlFieldViewHolder {
         return UrlFieldViewHolder.onCreate(parent)
@@ -29,7 +31,7 @@ class UrlFieldAdapter(private val listener: DialogListener) : RecyclerView.Adapt
 
             override fun observeField(data: FeedVideo) {
                 listener.observeField(data)
-                urlData.add(data)
+                urlData.add(holder.getUrlValue())
             }
         })
     }
@@ -39,6 +41,7 @@ class UrlFieldAdapter(private val listener: DialogListener) : RecyclerView.Adapt
     fun addMore(field: Unit) {
         addAndHideButtonIfRequired(field)
         notifyItemInserted(list.size)
+        urlData.clear()
     }
 
     fun clear() {
@@ -46,7 +49,10 @@ class UrlFieldAdapter(private val listener: DialogListener) : RecyclerView.Adapt
         notifyDataSetChanged()
     }
 
-    fun getAllUrl() = urlData
+    fun getAllUrl(): List<FeedVideo> {
+        urlCollection.add(urlData.last())
+        return urlCollection
+    }
 
     private fun addAndHideButtonIfRequired(field: Unit) {
         if (list.size < 9) {
@@ -55,16 +61,5 @@ class UrlFieldAdapter(private val listener: DialogListener) : RecyclerView.Adapt
             list.add(field)
             listener.onIsHiddenAddMoreButton(true)
         }
-    }
-
-    private fun getLastEmitUrl(holder: UrlFieldViewHolder, position: Int): FeedVideo {
-        val map = mutableMapOf<Int, FeedVideo>()
-        val value = map[position]
-
-        if (value != null) {
-            map[position] = holder.getUrlValue()
-        }
-
-        return value!!
     }
 }

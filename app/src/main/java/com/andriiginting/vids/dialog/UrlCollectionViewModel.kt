@@ -1,5 +1,6 @@
 package com.andriiginting.vids.dialog
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,12 +14,13 @@ class UrlCollectionViewModel : ViewModel() {
     private val _videoState = MutableLiveData<MainFeedState>(MainFeedState.ShowDefault)
     val videoState: LiveData<MainFeedState> get() = _videoState
 
-    private val list = mutableSetOf<FeedVideo>()
+    private val tempList = mutableSetOf<FeedVideo>()
+    private val actualList = mutableListOf<FeedVideo>()
 
     fun populateUrlCollection(data: FeedVideo) {
         if (data.url.isNotEmpty()) {
-            list.add(data)
-            onObserveUrlField(list)
+            tempList.add(data)
+            onObserveUrlField(tempList)
         }
     }
 
@@ -32,36 +34,8 @@ class UrlCollectionViewModel : ViewModel() {
 
     fun postVideos(data: List<FeedVideo>) {
         _videoState.value = MainFeedState.HideEmptyScreen
-        _videoState.value = MainFeedState.AddVideos(dummyData())
-    }
-
-    private fun dummyData(): List<FeedVideo> {
-        return listOf(
-            FeedVideo(
-                "https://static.klliq.com/videos/uWPJnU7z5OysYjptZkBI6T1HANjC4WdP_hd.mp4",
-                "https://static.klliq.com/thumbnails/ZnFAHzGD9RQrRsBjJt2Pv3Y1vIAo11FX.png"
-            ),
-            FeedVideo(
-                "https://static.klliq.com/videos/EJUhFO-_YQkH_Ll6tPppf2EkR794aTQQ_hd.mp4",
-                "https://static.klliq.com/thumbnails/ZnFAHzGD9RQrRsBjJt2Pv3Y1vIAo11FX.png"
-            ),
-            FeedVideo(
-                "https://static.klliq.com/videos/uWPJnU7z5OysYjptZkBI6T1HANjC4WdP_hd.mp4",
-                "https://static.klliq.com/thumbnails/ZnFAHzGD9RQrRsBjJt2Pv3Y1vIAo11FX.png"
-            ),
-            FeedVideo(
-                "https://static.klliq.com/videos/EJUhFO-_YQkH_Ll6tPppf2EkR794aTQQ_hd.mp4",
-                "https://static.klliq.com/thumbnails/5a7Byj0r5ZIKC0gV9QWCneZQZEmKCP-B.png"
-            ),
-            FeedVideo(
-                "https://static.klliq.com/videos/uWPJnU7z5OysYjptZkBI6T1HANjC4WdP_hd.mp4",
-                "https://static.klliq.com/thumbnails/UFfUCqtb4FYwLRmI_m2Pq8xvRw-7vA-2.png"
-            ),
-            FeedVideo(
-                "https://static.klliq.com/videos/EJUhFO-_YQkH_Ll6tPppf2EkR794aTQQ_hd.mp4",
-                "https://static.klliq.com/thumbnails/5a7Byj0r5ZIKC0gV9QWCneZQZEmKCP-B.png"
-            )
-        )
+        actualList.addAll(data)
+        _videoState.value = MainFeedState.AddVideos(actualList)
     }
 }
 

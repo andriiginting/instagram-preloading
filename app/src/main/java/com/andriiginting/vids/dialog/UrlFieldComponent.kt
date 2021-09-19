@@ -20,21 +20,21 @@ class UrlFieldComponent @JvmOverloads constructor(
 
     private val binding = ItemAddUrlBinding.inflate(LayoutInflater.from(context), this, true)
     private lateinit var textChangeListener: (FeedVideo) -> Unit
-    private val clipboard =
-        binding.root.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    private val uniqueId = UUID.randomUUID().toString()
 
     private val presenter by lazy { UrlFieldPresenter(this) }
 
     fun bind(listener: (FeedVideo) -> Unit) {
         textChangeListener = listener
         binding.urlLayout.tvCopyClipboard.setOnClickListener {
-            presenter.onPasteFromClipboard(clipboard.primaryClip?.getItemAt(0).toString())
+            val clipboard = it.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            presenter.onPasteFromClipboard("${clipboard.primaryClip?.getItemAt(0)?.text}")
         }
 
         binding.urlLayout.etAddUrl.onTextChanged { s, _, _, _ ->
             presenter.validateUrl(s.toString())
         }
+
+        binding.urlLayout.etAddUrl.requestFocus()
     }
 
     fun getUrlValue() = binding.urlLayout.etAddUrl.text.toString()
@@ -47,15 +47,15 @@ class UrlFieldComponent @JvmOverloads constructor(
         binding.ivClearUrl.gone()
     }
 
-    fun removeField(removedId: (String) -> Unit) {
+    fun removeField(removedId: () -> Unit) {
         binding.ivClearUrl.setOnClickListener {
-            removedId(uniqueId)
+            removedId()
         }
     }
 
     override fun notifyValidUrl(url: String) {
         textChangeListener(
-            FeedVideo(url, "https://source.unsplash.com/weekly?japan")
+            FeedVideo(url, "")
         )
     }
 
@@ -76,7 +76,6 @@ class UrlFieldComponent @JvmOverloads constructor(
     override fun showClipboardButton() {
         binding.urlLayout.tvCopyClipboard.visible()
     }
-
 }
 
 interface UrlFieldViewComponent {

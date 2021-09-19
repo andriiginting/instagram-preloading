@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.isInvisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -35,6 +36,7 @@ class AddPostDialog : DialogListener, DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         bindingInst = DialogAddPostUrlBinding.inflate(LayoutInflater.from(context))
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         return AlertDialog.Builder(requireActivity())
             .setView(binding.root)
             .create()
