@@ -8,6 +8,8 @@ import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.andriiginting.vids.databinding.ItemAddUrlBinding
 import com.andriiginting.vids.gone
+import com.andriiginting.vids.hideKeyboard
+import com.andriiginting.vids.onTextChanged
 import com.andriiginting.vids.visible
 
 class UrlFieldComponent @JvmOverloads constructor(
@@ -28,11 +30,10 @@ class UrlFieldComponent @JvmOverloads constructor(
             presenter.onPasteFromClipboard("${clipboard.primaryClip?.getItemAt(0)?.text}")
         }
 
-        binding.urlLayout.etAddUrl.onTextChanged { s, _, _, _ ->
-            presenter.validateUrl(s.toString())
-        }
-
         binding.urlLayout.etAddUrl.apply {
+            onTextChanged { s, _, _, _ ->
+                presenter.validateUrl(s.toString())
+            }
             requestFocus()
             setOnEditorActionListener { view, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
